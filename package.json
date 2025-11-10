@@ -1,0 +1,20 @@
+{
+  "name": "hapit",
+  "version": "1.0.0",
+  "description": "hapi plays",
+  "license": "ISC",
+  "author": "juanotto",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js",
+    "test": "test"
+  },
+  "dependencies": {
+    "@hapi/basic": "^7.0.2",
+    "@hapi/hapi": "^21.4.4",
+    "bcrypt": "^6.0.0",
+    "joi": "^18.0.1",
+    "uuid": "^13.0.0"
+  }
+}
