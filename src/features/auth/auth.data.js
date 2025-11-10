@@ -171,6 +171,13 @@ class AuthDataStore {
       usersWithSessions: this.userSessions.size
     };
   }
+
+  // Clear all data (for testing)
+  clearAll() {
+    this.blacklistedTokens.clear();
+    this.refreshTokens.clear();
+    this.userSessions.clear();
+  }
 }
 
 // Export singleton instance

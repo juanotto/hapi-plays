@@ -1,7 +1,7 @@
 'use strict';
 
 const { userDataStore } = require('./users.data');
-const { createUserSchema, updateUserSchema, sanitizeUser } = require('./users.model');
+const { User, createUserSchema, updateUserSchema, sanitizeUser } = require('./users.model');
 
 // Route handlers
 const getAllUsers = (request, h) => {
@@ -31,7 +31,12 @@ const getUserById = (request, h) => {
 const createUser = async (request, h) => {
   try {
     const userData = request.payload;
-    const user = await userDataStore.createUser(userData);
+    
+    // Create User object first (routes are responsible for validation and object creation)
+    const userObject = await User.create(userData);
+    
+    // Store the User object in data store
+    const user = userDataStore.createUser(userObject);
     
     return h.response(sanitizeUser(user)).code(201);
   } catch (error) {

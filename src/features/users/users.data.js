@@ -36,7 +36,7 @@ class UserDataStore {
 
   // Get user by ID
   getUserById(id) {
-    return this.users.get(id);
+    return this.users.get(id) || null;
   }
 
   // Get user by username
@@ -51,13 +51,16 @@ class UserDataStore {
   }
 
   // Create new user
-  async createUser(userData) {
-    // Check if username already exists
-    if (this.usernameExists(userData.username)) {
-      throw new Error('Username already exists');
+  createUser(user) {
+    // Expect a User object, not raw data
+    if (!user || !user.id || !user.username) {
+      throw new Error('Invalid user object provided');
     }
 
-    const user = await User.create(userData);
+    // Check if username already exists
+    if (this.usernameExists(user.username)) {
+      throw new Error('Username already exists');
+    }
     
     // Store user and create username index
     this.users.set(user.id, user);
@@ -112,13 +115,24 @@ class UserDataStore {
     }
 
     const isValid = await user.verifyPassword(password);
+    
+    if (!isValid) {
+      return { credentials: null, isValid: false };
+    }
+    
     const credentials = { 
       id: user.id, 
       name: user.name, 
       username: user.username 
     };
 
-    return { isValid, credentials };
+    return { isValid: true, credentials };
+  }
+
+  // Clear all data (for testing)
+  clearAll() {
+    this.users.clear();
+    this.usernameIndex.clear();
   }
 }
 

@@ -32,8 +32,14 @@ const init = async () => {
         }
     });
 
+    return server;  // Return server without starting (for testing)
+};
+
+const start = async () => {
+    const server = await init();
     await server.start();
     console.log('Server running on %s', server.info.uri);
+    return server;
 };
 
 process.on('unhandledRejection', (err) => {
@@ -41,4 +47,9 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
 });
 
-init();
+// Export for testing, but start server if called directly
+if (require.main === module) {
+    start();
+}
+
+module.exports = { init, start };
