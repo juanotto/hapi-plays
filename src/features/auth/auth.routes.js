@@ -187,61 +187,6 @@ const authStats = async (request, h) => {
   }
 };
 
-const debugToken = async (request, h) => {
-  try {
-    const authHeader = request.headers.authorization;
-    
-    if (!authHeader) {
-      return h.response({
-        error: 'No Authorization header found',
-        expected: 'Authorization: Bearer <token>'
-      }).code(400);
-    }
-    
-    if (!authHeader.startsWith('Bearer ')) {
-      return h.response({
-        error: 'Invalid Authorization header format',
-        received: authHeader,
-        expected: 'Authorization: Bearer <token>'
-      }).code(400);
-    }
-    
-    const token = TokenManager.extractTokenFromHeader(authHeader);
-    
-    if (!token) {
-      return h.response({
-        error: 'Could not extract token from header'
-      }).code(400);
-    }
-    
-    try {
-      const decoded = TokenManager.verifyToken(token);
-      const isBlacklisted = authDataStore.isTokenBlacklisted(token);
-      
-      return h.response({
-        success: true,
-        token: {
-          valid: true,
-          blacklisted: isBlacklisted,
-          decoded: decoded,
-          tokenLength: token.length,
-          tokenStart: token.substring(0, 20) + '...'
-        }
-      }).code(200);
-      
-    } catch (tokenError) {
-      return h.response({
-        error: 'Token verification failed',
-        details: tokenError.message,
-        tokenStart: token.substring(0, 20) + '...'
-      }).code(400);
-    }
-    
-  } catch (error) {
-    console.error('Debug token error:', error);
-    return h.response({ error: 'Internal server error' }).code(500);
-  }
-};
 
 // Route definitions
 const routes = [
@@ -316,16 +261,7 @@ const routes = [
       auth: false  // Debug endpoint - in production, this should require admin auth
     }
   },
-  {
-    method: 'GET',
-    path: '/auth/debug-token',
-    handler: debugToken,
-    options: {
-      description: 'Debug JWT token validation (debug endpoint)',
-      tags: ['api', 'auth', 'debug'],
-      auth: 'jwt'  // Debug endpoint
-    }
-  }
+
 ];
 
 module.exports = {
@@ -335,6 +271,5 @@ module.exports = {
   logoutAll,
   refreshToken,
   me,
-  authStats,
-  debugToken
+  authStats
 };

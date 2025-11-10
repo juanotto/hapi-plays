@@ -21,8 +21,7 @@ const plugin = {
   }
 };
 
-// Export plugin and validation function
+// Export plugin
 module.exports = {
-  plugin,
-  validateUser
+  plugin
 };
