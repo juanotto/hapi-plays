@@ -1,7 +1,9 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi');
+const { plugin: authPlugin } = require('./src/features/auth');
 const { plugin: usersPlugin, validateUser } = require('./src/features/users');
+const { plugin: teamsPlugin } = require('./src/features/teams');
 
 const pastaRecipes = [
   { id: 1, name: 'Spaghetti Bolognese' },
@@ -17,11 +19,17 @@ const init = async () => {
     });
 
     // Register plugins
+    await server.register(authPlugin);      // Register auth first to set up JWT strategy
     await server.register(require('@hapi/basic'));
     await server.register(usersPlugin);
+    await server.register(teamsPlugin);
     
-    // Setup authentication
+    // Setup authentication strategies
     server.auth.strategy('simple', 'basic', { validate: validateUser });
+    // JWT strategy is set up by auth plugin
+      
+    // Set JWT as default auth for new routes (optional)
+    server.auth.default('jwt');
 
     // Leaving this one until proper liveness test is set up
     server.route({
