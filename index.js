@@ -7,9 +7,17 @@ const { plugin: teamsPlugin } = require('./src/features/teams');
 
 const init = async () => {
 
+    // Fail fast if required environment variables are missing
+    if (!process.env.PORT) {
+        throw new Error('PORT environment variable is required');
+    }
+    if (!process.env.HOST) {
+        throw new Error('HOST environment variable is required');
+    }
+
     const server = Hapi.server({
-        port: 3000,
-        host: 'localhost'
+        port: parseInt(process.env.PORT, 10),
+        host: process.env.HOST
     });
 
     // Register plugins

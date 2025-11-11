@@ -180,8 +180,6 @@ ecosystem.config.js
 
 # Docker
 .dockerignore
-Dockerfile*
-docker-compose*.yml
 .docker/
 
 # Terraform (if using for infrastructure)
