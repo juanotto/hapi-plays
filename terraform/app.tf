@@ -25,6 +25,17 @@ resource "kubernetes_deployment" "hapit" {
       }
 
       spec {
+        init_container {
+          name  = "wait-for-postgres"
+          image = "busybox:1.36"
+          
+          command = [
+            "sh",
+            "-c",
+            "until nc -z postgres-service 5432; do echo 'Waiting for PostgreSQL...'; sleep 2; done; echo 'PostgreSQL is ready!'"
+          ]
+        }
+
         container {
           name  = "hapit"
           image = "localhost:32000/hapit:latest"
