@@ -7,17 +7,21 @@ const { plugin: teamsPlugin } = require('./src/features/teams');
 
 const init = async () => {
 
-    // Fail fast if required environment variables are missing
-    if (!process.env.PORT) {
-        throw new Error('PORT environment variable is required');
-    }
-    if (!process.env.HOST) {
-        throw new Error('HOST environment variable is required');
+    // Fail fast if required environment variables are missing (except in test mode)
+    const isTest = process.env.NODE_ENV === 'test' || process.argv.some(arg => arg.includes('lab'));
+    
+    if (!isTest) {
+        if (!process.env.PORT) {
+            throw new Error('PORT environment variable is required');
+        }
+        if (!process.env.HOST) {
+            throw new Error('HOST environment variable is required');
+        }
     }
 
     const server = Hapi.server({
-        port: parseInt(process.env.PORT, 10),
-        host: process.env.HOST
+        port: isTest ? 0 : parseInt(process.env.PORT, 10), // Port 0 = random available port for tests
+        host: isTest ? 'localhost' : process.env.HOST
     });
 
     // Register plugins
