@@ -114,7 +114,27 @@ microk8s kubectl get svc -n hapit
 curl http://localhost:30080
 ```
 
+## Access PostgreSQL Database
+
+To connect to the PostgreSQL database with a client like DBeaver or psql, run port-forwarding with:
+
+```bash
+microk8s kubectl port-forward -n hapit svc/postgres-service 5432:5432
+```
+
+Then connect using:
+
+- Host: `localhost`
+- Port: `5432`
+- Database: `hapit`
+- Username: `hapit`
+- Password: `hapit123`
+
 ## Files
 
-- `main.tf` - Main Terraform configuration with provider, namespace, deployment, and service
+- `main.tf` - Terraform and Kubernetes provider configuration
+- `namespace.tf` - Kubernetes namespace resource
+- `app.tf` - Hapit application deployment and NodePort service
+- `database.tf` - PostgreSQL deployment, PersistentVolumeClaim, and ClusterIP service
 - `outputs.tf` - Output values for easy reference
+- `.gitignore` - Excludes Terraform local state and lock files from version control

@@ -4,6 +4,7 @@ const Hapi = require('@hapi/hapi');
 const { plugin: authPlugin } = require('./src/features/auth');
 const { plugin: usersPlugin } = require('./src/features/users');
 const { plugin: teamsPlugin } = require('./src/features/teams');
+const { testConnection } = require('./src/config/db');
 
 const init = async () => {
 
@@ -16,6 +17,13 @@ const init = async () => {
         }
         if (!process.env.HOST) {
             throw new Error('HOST environment variable is required');
+        }
+        
+        // Test database connection on startup
+        try {
+            await testConnection();
+        } catch (error) {
+            console.error('Failed to connect to database. Application will continue but database operations will fail.');
         }
     }
 
