@@ -1,0 +1,6 @@
+# Terraform files, do not commit local state
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars

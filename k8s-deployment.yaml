@@ -1,0 +1,43 @@
+# Early deployment manifest to test locally
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hapit
+  labels:
+    app: hapit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hapit
+  template:
+    metadata:
+      labels:
+        app: hapit
+    spec:
+      containers:
+      - name: hapit
+        image: localhost:32000/hapit:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PORT
+          value: "3000"
+        - name: HOST
+          value: "0.0.0.0"
+        - name: NODE_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hapit-service
+spec:
+  type: NodePort
+  selector:
+    app: hapit
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+    nodePort: 30080

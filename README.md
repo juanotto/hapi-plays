@@ -50,6 +50,12 @@ docker run -p 3000:3000 hapit
 docker run -d -p 3000:3000 hapit
 ```
 
+## Kubernetes Deployment
+
+The project supports deployment to MicroK8s using Terraform. The application is deployed to a dedicated `hapit` namespace with a NodePort service accessible on port 30080.
+
+See [terraform/README.md](terraform/README.md) for detailed deployment instructions.
+
 ## Testing
 
 ### Run All Tests
