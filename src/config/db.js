@@ -1,38 +1,22 @@
 'use strict';
 
-const { Pool } = require('pg');
+const PostgresDatabase = require('./database/postgres');
+const SqliteDatabase = require('./database/sqlite');
 
-// Database configuration from environment variables
-const config = {
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432', 10),
-    database: process.env.DB_NAME || 'hapit',
-    user: process.env.DB_USER || 'hapit',
-    password: process.env.DB_PASSWORD || 'hapit123',
-    // Connection pool settings
-    max: 20, // Maximum number of clients in the pool
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
-};
+// Determine which database implementation to use
+const dbType = process.env.DB_TYPE || (process.env.DB_HOST ? 'postgres' : 'sqlite');
 
-// Create a connection pool
-const pool = new Pool(config);
+// Create database instance
+let database;
+if (dbType === 'sqlite') {
+    database = new SqliteDatabase();
+} else {
+    database = new PostgresDatabase();
+}
 
-// Test database connection
-const testConnection = async () => {
-    try {
-        const client = await pool.connect();
-        const result = await client.query('SELECT NOW()');
-        console.log('✓ Database connected successfully at', result.rows[0].now);
-        client.release();
-        return true;
-    } catch (error) {
-        console.error('✗ Database connection failed:', error.message);
-        throw error;
-    }
-};
-
+// Export the database instance and its methods
 module.exports = {
-    pool,
-    testConnection
+    query: (sql, params) => database.query(sql, params),
+    testConnection: () => database.testConnection(),
+    close: () => database.close()
 };

@@ -1,10 +1,10 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi');
-const { plugin: authPlugin } = require('./src/features/auth');
-const { plugin: usersPlugin } = require('./src/features/users');
-const { plugin: teamsPlugin } = require('./src/features/teams');
-const { testConnection } = require('./src/config/db');
+const { plugin: authPlugin } = require('./features/auth');
+const { plugin: usersPlugin } = require('./features/users');
+const { plugin: teamsPlugin } = require('./features/teams');
+const { testConnection } = require('./config/db');
 
 const init = async () => {
 
